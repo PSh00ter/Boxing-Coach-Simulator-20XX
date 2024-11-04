@@ -8,5 +8,5 @@ main_personality_traits = ['Cocky ', 'Sleepy ', 'Arrogant ', 'Annoying ',
                       'Tough ', 'Calculating ', 'Childish ', 'Clumsy ',
                            'Dull ', 'Gloomy ', 'Hateful ', 'Disobedient',
                            'Powerful']
-strengths = ['Jab', 'Hook', 'Cross', 'Speed', 'Footwork', 'Headwork',
+strengths = ['Jab', 'Hook', 'Cross', 'Speed', 'Footwork', 'Head Movement',
              'Power', 'Feint', 'Uppercut']
