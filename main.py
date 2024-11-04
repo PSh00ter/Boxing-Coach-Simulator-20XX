@@ -2,6 +2,8 @@ import random
 from lists import *
 _CHAPTER_LINE = '=' * 75
 fighter_choice = ''
+stat_demo = ''
+upgrade_stat = ''
 def assign_traits(main_personality_traits, num_traits=4):
     """this function generages a personality trait from the list...kinda
     useless change later"""
@@ -15,12 +17,20 @@ def generate_character():
     lname = random.choice(last_names)
     height = (possible_heights[random.randint(0, len(possible_heights) - 1)])
     weight = (random.randint(100, 205))
+    speed = (random.randint(25, 100))
+    power = (random.randint(25, 100))
+    finesse = (random.randint(25, 100))
     strength = random.choice(strengths)
     return {
+        'first_name': fname,
+        'last_name': lname,
         'name': fname + lname,
         'traits': personality,
         'weight': weight,
         'height': height,
+        'speed': speed,
+        'power': power,
+        'finesse': finesse,
         'strength': strength
     }
 
@@ -37,9 +47,24 @@ def display_character(character):
     )
     return display_string
 
+def calculate_win_percentage(fighter, opponent, strategy_modifier=0):
+    power_advantage = (fighter['power'] - opponent['power']) / 100
+    speed_advantage = (fighter['speed'] - opponent['speed']) / 100
+    finesse_advantage = (fighter['finesse'] - opponent['finesse']) / 100
+    win_probability = (
+        (power_advantage * 0.4) +
+        (speed_advantage * 0.3) +
+        (finesse_advantage * 0.3) +
+        strategy_modifier
+    ) * 100
+    win_probability += random.uniform(-5, 5)
+    return max(0, min(100, win_probability))
+
 fighter1 = generate_character()
 fighter2 = generate_character()
 fighter3 = generate_character()
+
+tier1_opponent = generate_character()
 
 print(_CHAPTER_LINE)
 print("Welcome to Boxing Coach Simulator 20XX!")
@@ -88,6 +113,38 @@ You spot three distinct fighters.""")
                 print("Invalid choice! Try again.")
         print(f"You've chosen {fighter['name']} as your main pupil.")
         print(f"His speciality is {fighter['strength']}")
+        print(f"""As his first fight approaches, {fighter['first_name']}needs guidance for his training.
+He asks you what you think he should focus on. You ask him to demonstrate 
+either his speed, strength, or finesse:
+(SP) : Speed
+(P) : Power
+(F) : Finesse""")
+        while stat_demo not in ['SP', 'P', 'F']:
+            stat_demo = input("Choose which stat you would like to see: ")
+            stat_demo = stat_demo.upper()
+            if stat_demo == 'SP':
+                print(f"Speed = {fighter['speed']}")
+            elif stat_demo == 'P':
+                print(f"Power = {fighter['power']}")
+            elif stat_demo == 'F':
+                print(f"Finesse = {fighter['finesse']}")
+        while upgrade_stat not in ['SP', 'P', 'F']:
+            upgrade_stat = input(f"Now, choose which stat to work on with "
+                                 f"{fighter['first_name']}: ")
+            upgrade_stat = upgrade_stat.upper()
+            if upgrade_stat == 'SP':
+                fighter['speed'] = fighter['speed'] + 5
+                print(f"New Speed = {fighter['speed']}")
+            elif upgrade_stat == 'P':
+                fighter['power'] = fighter['power'] + 5
+                print(f"New Power = {fighter['power']}")
+            elif upgrade_stat == 'F':
+                fighter['finesse'] = fighter['finesse'] + 5
+                print(f"New Finesse = {fighter['finesse']}")
+        print(f"""After training, you do some scouting on 
+{fighter['first_name']}'s first opponent. You see that their name is 
+{tier1_opponent['name']} and their main strength is {tier1_opponent['strength']}.""")
+        print(calculate_win_percentage(fighter, tier1_opponent))
     if menu_input == 'C':
         print(_CHAPTER_LINE)
         print("""This game was made by a solo dev named Preston Knoebel. It 
