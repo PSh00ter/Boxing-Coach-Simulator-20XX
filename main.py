@@ -2,8 +2,6 @@ import random
 from lists import *
 _CHAPTER_LINE = '=' * 75
 fighter_choice = ''
-stat_demo = ''
-upgrade_stat = ''
 def assign_traits(main_personality_traits, num_traits=4):
     """this function generages a personality trait from the list...kinda
     useless change later"""
@@ -113,38 +111,43 @@ You spot three distinct fighters.""")
                 print("Invalid choice! Try again.")
         print(f"You've chosen {fighter['name']} as your main pupil.")
         print(f"His speciality is {fighter['strength']}")
-        print(f"""As his first fight approaches, {fighter['first_name']}needs guidance for his training.
+        def training_sequence():
+            print(f"""As his fight approaches, {fighter['first_name']}needs guidance for his training.
 He asks you what you think he should focus on. You ask him to demonstrate 
 either his speed, strength, or finesse:
 (SP) : Speed
 (P) : Power
 (F) : Finesse""")
-        while stat_demo not in ['SP', 'P', 'F']:
-            stat_demo = input("Choose which stat you would like to see: ")
-            stat_demo = stat_demo.upper()
-            if stat_demo == 'SP':
-                print(f"Speed = {fighter['speed']}")
-            elif stat_demo == 'P':
-                print(f"Power = {fighter['power']}")
-            elif stat_demo == 'F':
-                print(f"Finesse = {fighter['finesse']}")
-        while upgrade_stat not in ['SP', 'P', 'F']:
-            upgrade_stat = input(f"Now, choose which stat to work on with "
-                                 f"{fighter['first_name']}: ")
-            upgrade_stat = upgrade_stat.upper()
-            if upgrade_stat == 'SP':
-                fighter['speed'] = fighter['speed'] + 5
-                print(f"New Speed = {fighter['speed']}")
-            elif upgrade_stat == 'P':
-                fighter['power'] = fighter['power'] + 5
-                print(f"New Power = {fighter['power']}")
-            elif upgrade_stat == 'F':
-                fighter['finesse'] = fighter['finesse'] + 5
-                print(f"New Finesse = {fighter['finesse']}")
+            stat_demo = ''
+            upgrade_stat = ''
+            while stat_demo not in ['SP', 'P', 'F']:
+                stat_demo = input("Choose which stat you would like to see: ")
+                stat_demo = stat_demo.upper()
+                if stat_demo == 'SP':
+                    print(f"Speed = {fighter['speed']}")
+                elif stat_demo == 'P':
+                    print(f"Power = {fighter['power']}")
+                elif stat_demo == 'F':
+                    print(f"Finesse = {fighter['finesse']}")
+            while upgrade_stat not in ['SP', 'P', 'F']:
+                upgrade_stat = input(f"Now, choose which stat to work on with "
+                                     f"{fighter['first_name']}: ")
+                upgrade_stat = upgrade_stat.upper()
+                if upgrade_stat == 'SP':
+                    fighter['speed'] = fighter['speed'] + 5
+                    print(f"New Speed = {fighter['speed']}")
+                elif upgrade_stat == 'P':
+                    fighter['power'] = fighter['power'] + 5
+                    print(f"New Power = {fighter['power']}")
+                elif upgrade_stat == 'F':
+                    fighter['finesse'] = fighter['finesse'] + 5
+                    print(f"New Finesse = {fighter['finesse']}")
+        training_sequence()
         print(f"""After training, you do some scouting on 
 {fighter['first_name']}'s first opponent. You see that their name is 
 {tier1_opponent['name']} and their main strength is {tier1_opponent['strength']}.""")
-        print(calculate_win_percentage(fighter, tier1_opponent))
+        calculate_win_percentage(fighter, tier1_opponent)
+
     if menu_input == 'C':
         print(_CHAPTER_LINE)
         print("""This game was made by a solo dev named Preston Knoebel. It 
