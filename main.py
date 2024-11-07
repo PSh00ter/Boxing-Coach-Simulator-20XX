@@ -2,6 +2,7 @@ import random
 from lists import *
 _CHAPTER_LINE = '=' * 75
 fighter_choice = ''
+next_choice = ''
 win_record = 0
 lose_record = 0
 def assign_traits(main_personality_traits, num_traits=4):
@@ -17,9 +18,9 @@ def generate_character():
     lname = random.choice(last_names)
     height = (possible_heights[random.randint(0, len(possible_heights) - 1)])
     weight = (random.randint(100, 205))
-    speed = (random.randint(25, 100))
-    power = (random.randint(25, 100))
-    finesse = (random.randint(25, 100))
+    speed = (random.randint(35, 70))
+    power = (random.randint(35, 70))
+    finesse = (random.randint(35, 70))
     strength = random.choice(strengths)
     return {
         'first_name': fname.strip(),
@@ -33,18 +34,26 @@ def generate_character():
         'finesse': finesse,
         'strength': strength
     }
-def generate_opponent():
-    """This function generates a fighter for use later when giving the user
-    three options for fighters to train, assigning a name, weight, height,
-    strength, and main personality trait to them for gameplay"""
+def generate_opponent(tier):
+    """This function generates an opponent for later use against the fighter, and
+    be reused over and over to generate new fighters."""
     personality = assign_traits(main_personality_traits, 1)
     fname = random.choice(first_names)
     lname = random.choice(last_names)
     height = (possible_heights[random.randint(0, len(possible_heights) - 1)])
     weight = (random.randint(100, 205))
-    speed = (random.randint(25, 80))
-    power = (random.randint(25, 80))
-    finesse = (random.randint(25, 80))
+    if tier == 'tier1':
+        speed = (random.randint(25, 40))
+        power = (random.randint(25, 40))
+        finesse = (random.randint(25, 40))
+    elif tier == 'tier2':
+        speed = (random.randint(45, 60))
+        power = (random.randint(45, 60))
+        finesse = (random.randint(45, 60))
+    elif tier == 'tier3':
+        speed = (random.randint(65, 80))
+        power = (random.randint(65, 80))
+        finesse = (random.randint(65, 80))
     strength = random.choice(strengths)
     return {
         'first_name': fname.strip(),
@@ -81,9 +90,9 @@ def calculate_win_percentage(fighter, opponent, strategy_modifier=0):
         (finesse_advantage * 0.3)
     ) * 100
     win_probability += strategy_modifier
-    win_probability += random.uniform(-5, 5)
+    win_probability += random.uniform(-3, 3)
     win_probability = max(0, min(100, win_probability))
-    if random.randint(0, 99) < win_probability:
+    if random.randint(0, 100) < win_probability:
         return 'win'
     else:
         return 'lose'
@@ -91,8 +100,6 @@ def calculate_win_percentage(fighter, opponent, strategy_modifier=0):
 fighter1 = generate_character()
 fighter2 = generate_character()
 fighter3 = generate_character()
-
-tier1_opponent = generate_opponent()
 
 print(_CHAPTER_LINE)
 print("Welcome to Boxing Coach Simulator 20XX!")
@@ -142,8 +149,36 @@ You spot three distinct fighters.""")
                 print("Invalid choice! Try again.")
         print(f"You've chosen {fighter['name']} as your main pupil.")
         print(f"His speciality is {fighter['strength']}")
+        print(_CHAPTER_LINE)
+        def fight_sequence():
+            tier1_opponent = generate_opponent('tier1')
+            print(
+                f"""Before the fight, you have the opportunity to give {fighter['first_name']} advice
+so that he may beat the opponent.
+(A) "Good advice"
+(B) "Bad advice" """)
+            advice = input("What advice do you give? ")
+            advice = advice.upper()
+            fight_outcome = ''
+            global win_record, lose_record
+            if advice == 'A':
+                fight_outcome = calculate_win_percentage(fighter,
+                                                         tier1_opponent,10)
+            elif advice == 'B':
+                fight_outcome = calculate_win_percentage(fighter,
+                                                         tier1_opponent, 5)
+            if fight_outcome == 'win':
+                print(
+                    f"{fighter['first_name']} has defeated {tier1_opponent['first_name']} and won!")
+                win_record += 1
+                print(f"New record:  {win_record} - {lose_record}")
+            elif fight_outcome == 'lose':
+                print(
+                    f"{fighter['first_name']} has been defeated by {tier1_opponent['first_name']} and lost!")
+                lose_record += 1
+                print(f"New record:  {win_record} - {lose_record}")
         def training_sequence():
-            print(f"""As his fight approaches, {fighter['first_name']}needs guidance for his training.
+            print(f"""As his fight approaches, {fighter['first_name']} needs guidance for his training.
 He asks you what you think he should focus on. You ask him to demonstrate 
 either his speed, strength, or finesse:
 (SP) : Speed
@@ -174,26 +209,26 @@ either his speed, strength, or finesse:
                     fighter['finesse'] = fighter['finesse'] + 5
                     print(f"New Finesse = {fighter['finesse']}")
         training_sequence()
-        print(f"""After training, you do some scouting on 
-{fighter['first_name']}'s first opponent. You see that their name is 
-{tier1_opponent['name']} and their main strength is {tier1_opponent['strength']}.""")
-        print(f"""Before the fight, you have the opportunity to give {fighter['first_name']} advice
-so that he may beat the opponent.
-(A) "Good advice"
-(B) "Bad advice" """)
-        advice = input("What advice do you give? ")
-        if advice == 'A':
-            calculate_win_percentage(fighter, tier1_opponent, 70)
-        elif advice == 'B':
-            calculate_win_percentage(fighter, tier1_opponent, -5)
-        if calculate_win_percentage(fighter, tier1_opponent) == 'win':
-            print(f"{fighter['first_name']} has defeated {tier1_opponent['first_name']} and won!")
-            win_record += 1
-            print(f"New record:  {win_record} - {lose_record}")
-        elif calculate_win_percentage(fighter, tier1_opponent) == 'lose':
-            print(f"{fighter['first_name']} has been defeated by {tier1_opponent['first_name']} and lost!")
-            lose_record += 1
-            print(f"New record:  {win_record} - {lose_record}")
+        print(_CHAPTER_LINE)
+        print(f"""After training, it's time to fight.""")
+        fight_sequence()
+        print(_CHAPTER_LINE)
+        print(f"""After his first fight, {fighter['first_name']} seems incredibly motivated
+to continue his training. The shots are now yours to 
+call on how to proceed with his career. Good luck, Coach!""")
+        while next_choice not in [1, 2, 3]:
+            print(_CHAPTER_LINE)
+            next_choice = input("""Choose your next action: 
+(1) Train fighter
+(2) Enter fighter into bout
+(3) Piss off and die 
+""")
+            if next_choice == '1':
+                training_sequence()
+            elif next_choice == '2':
+                fight_sequence()
+            elif next_choice == '3':
+                break
     if menu_input == 'C':
         print(_CHAPTER_LINE)
         print("""This game was made by a solo dev named Preston Knoebel. It 
