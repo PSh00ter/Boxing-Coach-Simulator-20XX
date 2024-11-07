@@ -2,6 +2,8 @@ import random
 from lists import *
 _CHAPTER_LINE = '=' * 75
 fighter_choice = ''
+win_record = 0
+lose_record = 0
 def assign_traits(main_personality_traits, num_traits=4):
     """this function generages a personality trait from the list...kinda
     useless change later"""
@@ -127,6 +129,7 @@ You spot three distinct fighters.""")
         print(_CHAPTER_LINE)
         print(display_character(fighter3))
         print(_CHAPTER_LINE)
+        fighter = ''
         while fighter_choice not in ['1', '2', '3']:
             fighter_choice = input("Pick which fighter you'd like to take on! ")
             if fighter_choice == '1':
@@ -178,16 +181,19 @@ either his speed, strength, or finesse:
 so that he may beat the opponent.
 (A) "Good advice"
 (B) "Bad advice" """)
-        advice = ''
-        advice = input("What advice do you give?")
+        advice = input("What advice do you give? ")
         if advice == 'A':
             calculate_win_percentage(fighter, tier1_opponent, 70)
         elif advice == 'B':
             calculate_win_percentage(fighter, tier1_opponent, -5)
         if calculate_win_percentage(fighter, tier1_opponent) == 'win':
             print(f"{fighter['first_name']} has defeated {tier1_opponent['first_name']} and won!")
+            win_record += 1
+            print(f"New record:  {win_record} - {lose_record}")
         elif calculate_win_percentage(fighter, tier1_opponent) == 'lose':
             print(f"{fighter['first_name']} has been defeated by {tier1_opponent['first_name']} and lost!")
+            lose_record += 1
+            print(f"New record:  {win_record} - {lose_record}")
     if menu_input == 'C':
         print(_CHAPTER_LINE)
         print("""This game was made by a solo dev named Preston Knoebel. It 
