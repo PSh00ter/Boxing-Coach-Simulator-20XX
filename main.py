@@ -5,6 +5,8 @@ fighter_choice = ''
 next_choice = ''
 win_record = 0
 lose_record = 0
+training_sickness = 0
+tier = 'tier1'
 def assign_traits(main_personality_traits, num_traits=4):
     """this function generages a personality trait from the list...kinda
     useless change later"""
@@ -151,7 +153,8 @@ You spot three distinct fighters.""")
         print(f"His speciality is {fighter['strength']}")
         print(_CHAPTER_LINE)
         def fight_sequence():
-            tier1_opponent = generate_opponent('tier1')
+            global win_record, lose_record, tier, training_sickness
+            tier1_opponent = generate_opponent(tier)
             print(
                 f"""Before the fight, you have the opportunity to give {fighter['first_name']} advice
 so that he may beat the opponent.
@@ -160,7 +163,6 @@ so that he may beat the opponent.
             advice = input("What advice do you give? ")
             advice = advice.upper()
             fight_outcome = ''
-            global win_record, lose_record
             if advice == 'A':
                 fight_outcome = calculate_win_percentage(fighter,
                                                          tier1_opponent,10)
@@ -172,12 +174,18 @@ so that he may beat the opponent.
                     f"{fighter['first_name']} has defeated {tier1_opponent['first_name']} and won!")
                 win_record += 1
                 print(f"New record:  {win_record} - {lose_record}")
+                if win_record >= 6:
+                    tier = 'tier2'
+                elif win_record >= 10:
+                    tier = 'tier3'
             elif fight_outcome == 'lose':
                 print(
                     f"{fighter['first_name']} has been defeated by {tier1_opponent['first_name']} and lost!")
                 lose_record += 1
                 print(f"New record:  {win_record} - {lose_record}")
+            training_sickness = 0
         def training_sequence():
+            global training_sickness
             print(f"""As his fight approaches, {fighter['first_name']} needs guidance for his training.
 He asks you what you think he should focus on. You ask him to demonstrate 
 either his speed, strength, or finesse:
@@ -195,19 +203,24 @@ either his speed, strength, or finesse:
                     print(f"Power = {fighter['power']}")
                 elif stat_demo == 'F':
                     print(f"Finesse = {fighter['finesse']}")
-            while upgrade_stat not in ['SP', 'P', 'F']:
-                upgrade_stat = input(f"Now, choose which stat to work on with "
-                                     f"{fighter['first_name']}: ")
-                upgrade_stat = upgrade_stat.upper()
-                if upgrade_stat == 'SP':
-                    fighter['speed'] = fighter['speed'] + 5
-                    print(f"New Speed = {fighter['speed']}")
-                elif upgrade_stat == 'P':
-                    fighter['power'] = fighter['power'] + 5
-                    print(f"New Power = {fighter['power']}")
-                elif upgrade_stat == 'F':
-                    fighter['finesse'] = fighter['finesse'] + 5
-                    print(f"New Finesse = {fighter['finesse']}")
+            if training_sickness < 3:
+                while upgrade_stat not in ['SP', 'P', 'F']:
+                    upgrade_stat = input(f"Now, choose which stat to work on with "
+                                         f"{fighter['first_name']}: ")
+                    upgrade_stat = upgrade_stat.upper()
+                    if upgrade_stat == 'SP':
+                        fighter['speed'] = fighter['speed'] + 5
+                        print(f"New Speed = {fighter['speed']}")
+                    elif upgrade_stat == 'P':
+                        fighter['power'] = fighter['power'] + 5
+                        print(f"New Power = {fighter['power']}")
+                    elif upgrade_stat == 'F':
+                        fighter['finesse'] = fighter['finesse'] + 5
+                        print(f"New Finesse = {fighter['finesse']}")
+            else:
+                print(f"""You've been overdoing it with {fighter['first_name']}'s training!
+Give him time to rest before the fight!""")
+            training_sickness += 1
         training_sequence()
         print(_CHAPTER_LINE)
         print(f"""After training, it's time to fight.""")
@@ -216,18 +229,21 @@ either his speed, strength, or finesse:
         print(f"""After his first fight, {fighter['first_name']} seems incredibly motivated
 to continue his training. The shots are now yours to 
 call on how to proceed with his career. Good luck, Coach!""")
-        while next_choice not in [1, 2, 3]:
+        while next_choice not in [1, 2, 3, 4]:
             print(_CHAPTER_LINE)
             next_choice = input("""Choose your next action: 
 (1) Train fighter
 (2) Enter fighter into bout
-(3) Piss off and die 
+(3) View record
+(4) Piss off and die 
 """)
             if next_choice == '1':
                 training_sequence()
             elif next_choice == '2':
                 fight_sequence()
             elif next_choice == '3':
+                print(f"Record:  {win_record} - {lose_record}")
+            elif next_choice == '4':
                 break
     if menu_input == 'C':
         print(_CHAPTER_LINE)
