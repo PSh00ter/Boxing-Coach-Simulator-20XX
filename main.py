@@ -24,7 +24,7 @@ def generate_character():
     return {
         'first_name': fname,
         'last_name': lname,
-        'name': fname + lname,
+        'name': fname + ' ' + lname,
         'traits': personality,
         'weight': weight,
         'height': height,
