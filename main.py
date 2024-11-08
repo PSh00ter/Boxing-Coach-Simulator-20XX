@@ -1,10 +1,12 @@
 import random
 from lists import *
 _CHAPTER_LINE = '=' * 75
+_SPONSORSHIP_CHANCE = 0.05
 fighter_choice = ''
 next_choice = ''
 training_sickness = 0
 tier = 'tier1'
+companies = ['Boblox Boxing Gloves', 'Big Hands, Big Fists', "Ethan's Writing Studio", 'Knockout Corp.', "Jackson's Fishing Gear", "Sproston Pub N' Ale!", "Fisher's Food Truck"]
 personality_effects = {
     'Cocky': {'power': 4, 'finesse': -3},
     'Arrogant': {'power': 4, 'finesse': -2},
@@ -65,7 +67,7 @@ def generate_character():
         'strength': strength,
         'win_record': 0,
         'lose_record': 0,
-        'reputation': 0
+        'reputation': 10
     }
 def generate_opponent(tier):
     """This function generates an opponent for later use against the fighter, and
@@ -112,7 +114,6 @@ def display_character(character):
         f"Strength: {character['strength']}"
     )
     return display_string
-
 def calculate_win_percentage(fighter, opponent, strategy_modifier=0):
     power_advantage = (fighter['power'] - opponent['power']) / 100
     speed_advantage = (fighter['speed'] - opponent['speed']) / 100
@@ -129,7 +130,20 @@ def calculate_win_percentage(fighter, opponent, strategy_modifier=0):
         return 'win'
     else:
         return 'lose'
-
+def update_reputation(fighter, change):
+    fighter['reputation'] = max(0, min(100, fighter['reputation'] + change))
+    print(f"Reputation changed by {change}")
+def sponsorship(fighter):
+    print(_CHAPTER_LINE)
+    company = random.choice(companies)
+    rep_boost = random.randint(5, 15)
+    print(f"""{company} has decided that they want to sponsor {fighter['name']}!
+The attention from this sponsorship will surely give {fighter['name']} some extra rep!""")
+    fighter['reputation'] += rep_boost
+    print(f'Reputation increased by {rep_boost}')
+def random_event_check(fighter):
+    if random.random() < _SPONSORSHIP_CHANCE:
+        sponsorship(fighter)
 fighter1 = generate_character()
 fighter2 = generate_character()
 fighter3 = generate_character()
@@ -205,6 +219,7 @@ advice so that he may beat the opponent.
                     f"{fighter['first_name']} has defeated {tier1_opponent['first_name']} and won!")
                 fighter['win_record'] += 1
                 print(f"New record:  {fighter['win_record']} - {fighter['lose_record']}")
+                update_reputation(fighter, random.randint(1, 7))
                 if fighter['win_record'] >= 6:
                     tier = 'tier2'
                 elif fighter['win_record'] >= 10:
@@ -214,6 +229,7 @@ advice so that he may beat the opponent.
                     f"{fighter['first_name']} has been defeated by {tier1_opponent['first_name']} and lost!")
                 fighter['lose_record'] += 1
                 print(f"New record:  {fighter['win_record']} - {fighter['lose_record']}")
+                update_reputation(fighter, random.randint(-7, -1))
             training_sickness = 0
         def training_sequence():
             global training_sickness
@@ -252,6 +268,7 @@ either his speed, strength, or finesse:
                 print(f"""You've been overdoing it with {fighter['first_name']}'s training!
 Give him time to rest before the fight!""")
             training_sickness += 1
+            random_event_check(fighter)
         training_sequence()
         print(_CHAPTER_LINE)
         print(f"""After training, it's time to fight.""")
