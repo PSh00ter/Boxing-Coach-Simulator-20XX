@@ -3,12 +3,36 @@ from lists import *
 _CHAPTER_LINE = '=' * 75
 fighter_choice = ''
 next_choice = ''
-win_record = 0
-lose_record = 0
 training_sickness = 0
 tier = 'tier1'
+personality_effects = {
+    'Cocky': {'power': 4, 'finesse': -3},
+    'Arrogant': {'power': 4, 'finesse': -2},
+    'Sleepy': {'power': -3, 'speed': -3},
+    'Annoying': {'power': -2, 'finesse': 3},
+    'Violent': {'power': 5, 'finesse': -3},
+    'Vicious': {'power': 4, 'speed': 3},
+    'Prankster': {'finesse': 5, 'speed': 3},
+    'Joyful': {'finesse':3, 'speed': 3},
+    'Productive': {'speed':2, 'power':2, 'finesse':2},
+    'Lazy': {'speed': -3, 'power':2},
+    'Empathetic': {'speed':1},
+    'Insightful': {'finesse':5},
+    'Loyal': {'finesse':3},
+    'Competitive': {'power':3, 'speed': 4},
+    'Quiet': {'speed':3},
+    'Tough': {'power':5},
+    'Calculating': {'speed':4},
+    'Childish': {'finesse':2},
+    'Clumsy': {'finesse':-4, 'power':3},
+    'Dull': {'power':-2},
+    'Gloomy': {'speed':-2},
+    'Hateful': {'power':3},
+    'Disobedient': {'finesse':-6, 'power':5},
+    'Powerful': {'power':7, 'speed':-1}
+}
 def assign_traits(main_personality_traits, num_traits=4):
-    """this function generages a personality trait from the list...kinda
+    """this function generates a personality trait from the list...kinda
     useless change later"""
     return random.sample(main_personality_traits, num_traits)
 def generate_character():
@@ -24,6 +48,10 @@ def generate_character():
     power = (random.randint(35, 70))
     finesse = (random.randint(35, 70))
     strength = random.choice(strengths)
+    '''for trait in personality_effects:
+        if trait in personality_effects:
+            for stat, effect in personality_effects[trait].items():
+                fighter[stat] += effect'''
     return {
         'first_name': fname.strip(),
         'last_name': lname,
@@ -34,7 +62,10 @@ def generate_character():
         'speed': speed,
         'power': power,
         'finesse': finesse,
-        'strength': strength
+        'strength': strength,
+        'win_record': 0,
+        'lose_record': 0,
+        'reputation': 0
     }
 def generate_opponent(tier):
     """This function generates an opponent for later use against the fighter, and
@@ -78,7 +109,7 @@ def display_character(character):
         f"Height: {character['height']}\n"
         f"Personality: {', '.join(character['traits'])}\n"
         f"Weight: {character['weight']} lbs\n"
-        f"Strength: {character['strength']}\n"
+        f"Strength: {character['strength']}"
     )
     return display_string
 
@@ -156,8 +187,8 @@ You spot three distinct fighters.""")
             global win_record, lose_record, tier, training_sickness
             tier1_opponent = generate_opponent(tier)
             print(
-                f"""Before the fight, you have the opportunity to give {fighter['first_name']} advice
-so that he may beat the opponent.
+                f"""Before the fight, you have the opportunity to give {fighter['first_name']}
+advice so that he may beat the opponent.
 (A) "Good advice"
 (B) "Bad advice" """)
             advice = input("What advice do you give? ")
@@ -172,17 +203,17 @@ so that he may beat the opponent.
             if fight_outcome == 'win':
                 print(
                     f"{fighter['first_name']} has defeated {tier1_opponent['first_name']} and won!")
-                win_record += 1
-                print(f"New record:  {win_record} - {lose_record}")
-                if win_record >= 6:
+                fighter['win_record'] += 1
+                print(f"New record:  {fighter['win_record']} - {fighter['lose_record']}")
+                if fighter['win_record'] >= 6:
                     tier = 'tier2'
-                elif win_record >= 10:
+                elif fighter['win_record'] >= 10:
                     tier = 'tier3'
             elif fight_outcome == 'lose':
                 print(
                     f"{fighter['first_name']} has been defeated by {tier1_opponent['first_name']} and lost!")
-                lose_record += 1
-                print(f"New record:  {win_record} - {lose_record}")
+                fighter['lose_record'] += 1
+                print(f"New record:  {fighter['win_record']} - {fighter['lose_record']}")
             training_sickness = 0
         def training_sequence():
             global training_sickness
@@ -242,7 +273,7 @@ call on how to proceed with his career. Good luck, Coach!""")
             elif next_choice == '2':
                 fight_sequence()
             elif next_choice == '3':
-                print(f"Record:  {win_record} - {lose_record}")
+                print(f"Record:  {fighter['win_record']} - {fighter['lose_record']}")
             elif next_choice == '4':
                 break
     if menu_input == 'C':
