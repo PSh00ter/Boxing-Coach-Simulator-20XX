@@ -2,9 +2,11 @@ import random
 from lists import *
 _CHAPTER_LINE = '=' * 75
 _SPONSORSHIP_CHANCE = 0.05
+_SICKNESS_CHANCE = 0.05
 fighter_choice = ''
 next_choice = ''
 training_sickness = 0
+sickness_condition = False
 tier = 'tier1'
 companies = ['Boblox Boxing Gloves', 'Big Hands, Big Fists', "Ethan's Writing Studio", 'Knockout Corp.', "Jackson's Fishing Gear", "Sproston Pub N' Ale!", "Fisher's Food Truck"]
 personality_effects = {
@@ -141,8 +143,20 @@ def sponsorship(fighter):
 The attention from this sponsorship will surely give {fighter['name']} some extra rep!""")
     fighter['reputation'] += rep_boost
     print(f'Reputation increased by {rep_boost}')
+def sickness(fighter):
+    global sickness_condition
+    print(_CHAPTER_LINE)
+    print(f"""{fighter['first_name']} has contracted an illness and will be 
+unable to train this week, and will lose some of his fighting prowess as
+a result.""")
+    sickness_condition = True
+    fighter['power'] -= random.randint(1, 6)
+    fighter['speed'] -= random.randint(1, 6)
+    fighter['finesse'] -= random.randint(1, 6)
 def random_event_check(fighter):
-    if random.random() < _SPONSORSHIP_CHANCE:
+    if random.random() < _SICKNESS_CHANCE:
+        sickness(fighter)
+    elif random.random() < _SPONSORSHIP_CHANCE:
         sponsorship(fighter)
 fighter1 = generate_character()
 fighter2 = generate_character()
@@ -198,7 +212,7 @@ You spot three distinct fighters.""")
         print(f"His speciality is {fighter['strength']}")
         print(_CHAPTER_LINE)
         def fight_sequence():
-            global win_record, lose_record, tier, training_sickness
+            global win_record, lose_record, tier, training_sickness, sickness_condition
             tier1_opponent = generate_opponent(tier)
             print(
                 f"""Before the fight, you have the opportunity to give {fighter['first_name']}
@@ -231,8 +245,10 @@ advice so that he may beat the opponent.
                 print(f"New record:  {fighter['win_record']} - {fighter['lose_record']}")
                 update_reputation(fighter, random.randint(-7, -1))
             training_sickness = 0
+            sickness_condition = False
+            random_event_check(fighter)
         def training_sequence():
-            global training_sickness
+            global training_sickness, sickness_condition
             print(f"""As his fight approaches, {fighter['first_name']} needs guidance for his training.
 He asks you what you think he should focus on. You ask him to demonstrate 
 either his speed, strength, or finesse:
@@ -250,7 +266,7 @@ either his speed, strength, or finesse:
                     print(f"Power = {fighter['power']}")
                 elif stat_demo == 'F':
                     print(f"Finesse = {fighter['finesse']}")
-            if training_sickness < 3:
+            if training_sickness < 3 and sickness_condition == False:
                 while upgrade_stat not in ['SP', 'P', 'F']:
                     upgrade_stat = input(f"Now, choose which stat to work on with "
                                          f"{fighter['first_name']}: ")
@@ -265,8 +281,11 @@ either his speed, strength, or finesse:
                         fighter['finesse'] = fighter['finesse'] + 5
                         print(f"New Finesse = {fighter['finesse']}")
             else:
-                print(f"""You've been overdoing it with {fighter['first_name']}'s training!
+                if training_sickness >= 3:
+                    print(f"""You've been overdoing it with {fighter['first_name']}'s training!
 Give him time to rest before the fight!""")
+                elif sickness_condition == True:
+                    print(f"""{fighter['first_name']} is sick and cannot train this week.""")
             training_sickness += 1
             random_event_check(fighter)
         training_sequence()
