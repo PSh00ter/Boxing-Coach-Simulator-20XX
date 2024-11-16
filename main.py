@@ -8,7 +8,7 @@ next_choice = ''
 training_sickness = 0
 sickness_condition = False
 tier = 'tier1'
-companies = ['Boblox Boxing Gloves', 'Big Hands, Big Fists', "Ethan's Writing Studio", 'Knockout Corp.', "Jackson's Fishing Gear", "Sproston Pub N' Ale!", "Fisher's Food Truck"]
+companies = ['Boblox Boxing Gloves', 'Big Hands, Big Fists', "Ethan's Writing Studio", 'Knockout Corp.', "Jackson's Fishing Gear", "Sproston Pub N' Ale!", "Fisher's Food Truck", "MS Photography", "Pea's Grocery Mart"]
 personality_effects = {
     'Cocky': {'power': 4, 'finesse': -3},
     'Arrogant': {'power': 4, 'finesse': -2},
