@@ -177,15 +177,10 @@ if user_enter == '':
         print("""In Boxing Coach Simulator 20XX, you take the role of a 
 boxing coach. You will be given a choice between three fighters to choose as
 your main pupil. These fighters will have many different stats that 
-determine their ability to fight, such as their strengths, weaknesses, 
-personality traits, and their 'weapon'. 
-A weapon in the context of the game is a fighters main tool that they will 
-use to win fights. For example, a 'ghost jab' is a weapon that will let a fighter
-catch their opponent off-guard when they use it as they jab with blinding 
-speed. You will be given choices to influence your fighter, and their 
+determine their ability to fight, such as their strengths or personalities.
+You will be given choices to influence your fighter, and their 
 success will depend on the way you train them. Carefully consider their 
-personality, strengths, weaknesses, and weapons to lead your fighter to the 
-champion title!""")
+personality and strengths to lead your fighter to the champion title!""")
     if menu_input == 'B':
         print("""You enter the Noo-Boxers Gym, scoping out the potential 
 fighters around you and trying to search for a prospect who looks promising. 
