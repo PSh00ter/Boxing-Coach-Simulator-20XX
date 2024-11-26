@@ -211,9 +211,12 @@ You spot three distinct fighters.""")
             tier1_opponent = generate_opponent(tier)
             print(
                 f"""Before the fight, you have the opportunity to give {fighter['first_name']}
-advice so that he may beat the opponent.
-(A) "Good advice"
-(B) "Bad advice" """)
+advice so that he may beat the opponent. The opponent's name is 
+{tier1_opponent['name']} and he is {tier1_opponent['height']}, with his strength being {fighter['strength']}.
+(A) "Aim for a solid offense, but make sure to work your jab at keep your 
+distance."
+(B) "This guy looks pretty menacing, just turtle up and don't throw too many 
+punches at him, you'll be fine!" """)
             advice = input("What advice do you give? ")
             advice = advice.upper()
             fight_outcome = ''
