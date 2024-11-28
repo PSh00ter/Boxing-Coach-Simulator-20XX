@@ -7,8 +7,9 @@ fighter_choice = ''
 next_choice = ''
 training_sickness = 0
 sickness_condition = False
+facility_level = 1
 tier = 'tier1'
-companies = ['Boblox Boxing Gloves', 'Big Hands, Big Fists', "Ethan's Writing Studio", 'Knockout Corp.', "Jackson's Fishing Gear", "Sproston Pub N' Ale!", "Fisher's Food Truck", "MS Photography", "Pea's Grocery Mart"]
+companies = ['Boblox Boxing Gloves', 'Big Hands, Big Fists', "Ethan's Writing Studio", 'Knockout Corp.', "Jackson's Fishing Gear", "Sproston Pub N' Ale!", "Fisher's Food Truck", "MS Photography", "Pea's Grocery Mart", "Gremblo's Model Kits"]
 personality_effects = {
     'Cocky': {'power': 4, 'finesse': -3},
     'Arrogant': {'power': 4, 'finesse': -2},
@@ -213,7 +214,7 @@ You spot three distinct fighters.""")
                 f"""Before the fight, you have the opportunity to give {fighter['first_name']}
 advice so that he may beat the opponent. The opponent's name is 
 {tier1_opponent['name']} and he is {tier1_opponent['height']}, with his strength being {fighter['strength']}.
-(A) "Aim for a solid offense, but make sure to work your jab at keep your 
+(A) "Aim for a solid offense, but make sure to work your jab and keep your 
 distance."
 (B) "This guy looks pretty menacing, just turtle up and don't throw too many 
 punches at him, you'll be fine!" """)
@@ -269,15 +270,58 @@ either his speed, strength, or finesse:
                     upgrade_stat = input(f"Now, choose which stat to work on with "
                                          f"{fighter['first_name']}: ")
                     upgrade_stat = upgrade_stat.upper()
-                    if upgrade_stat == 'SP':
-                        fighter['speed'] = fighter['speed'] + 5
-                        print(f"New Speed = {fighter['speed']}")
-                    elif upgrade_stat == 'P':
-                        fighter['power'] = fighter['power'] + 5
-                        print(f"New Power = {fighter['power']}")
-                    elif upgrade_stat == 'F':
-                        fighter['finesse'] = fighter['finesse'] + 5
-                        print(f"New Finesse = {fighter['finesse']}")
+                    if facility_level == 1:
+                        if upgrade_stat == 'SP':
+                            fighter['speed'] = fighter['speed'] + random.randint(
+                                1, 6)
+                            print(f"New Speed = {fighter['speed']}")
+                        elif upgrade_stat == 'P':
+                            fighter['power'] = fighter['power'] + random.randint(
+                                1, 6)
+                            print(f"New Power = {fighter['power']}")
+                        elif upgrade_stat == 'F':
+                            fighter['finesse'] = fighter['finesse'] + random.randint(
+                                1, 6)
+                            print(f"New Finesse = {fighter['finesse']}")
+                    elif facility_level == 2:
+                        if upgrade_stat == 'SP':
+                            fighter['speed'] = fighter['speed'] + random.randint(
+                                3, 9)
+                            print(f"New Speed = {fighter['speed']}")
+                        elif upgrade_stat == 'P':
+                            fighter['power'] = fighter['power'] + random.randint(
+                                3, 9)
+                            print(f"New Power = {fighter['power']}")
+                        elif upgrade_stat == 'F':
+                            fighter['finesse'] = fighter['finesse'] + random.randint(
+                                3, 9)
+                            print(f"New Finesse = {fighter['finesse']}")
+                    elif facility_level == 3:
+                        if upgrade_stat == 'SP':
+                            fighter['speed'] = fighter['speed'] + random.randint(
+                                5, 12)
+                            print(f"New Speed = {fighter['speed']}")
+                        elif upgrade_stat == 'P':
+                            fighter['power'] = fighter['power'] + random.randint(
+                                5, 12)
+                            print(f"New Power = {fighter['power']}")
+                        elif upgrade_stat == 'F':
+                            fighter['finesse'] = fighter['finesse'] + random.randint(
+                                5, 12)
+                            print(f"New Finesse = {fighter['finesse']}")
+                    elif facility_level == 4:
+                        if upgrade_stat == 'SP':
+                            fighter['speed'] = fighter['speed'] + random.randint(
+                                7, 14)
+                            print(f"New Speed = {fighter['speed']}")
+                        elif upgrade_stat == 'P':
+                            fighter['power'] = fighter['power'] + random.randint(
+                                7, 14)
+                            print(f"New Power = {fighter['power']}")
+                        elif upgrade_stat == 'F':
+                            fighter['finesse'] = fighter['finesse'] + random.randint(
+                                7, 14)
+                            print(f"New Finesse = {fighter['finesse']}")
             else:
                 if training_sickness >= 3:
                     print(f"""You've been overdoing it with {fighter['first_name']}'s training!
@@ -294,21 +338,73 @@ Give him time to rest before the fight!""")
         print(f"""After his first fight, {fighter['first_name']} seems incredibly motivated
 to continue his training. The shots are now yours to 
 call on how to proceed with his career. Good luck, Coach!""")
-        while next_choice not in [1, 2, 3, 4]:
+        while next_choice not in [1, 2, 3, 4, 5]:
             print(_CHAPTER_LINE)
             next_choice = input("""Choose your next action: 
 (1) Train fighter
 (2) Enter fighter into bout
-(3) View record
-(4) Piss off and die 
+(3) Improve training facilities
+(4) View record and reputation
+(5) Piss off and die 
 """)
             if next_choice == '1':
                 training_sequence()
             elif next_choice == '2':
                 fight_sequence()
             elif next_choice == '3':
-                print(f"Record:  {fighter['win_record']} - {fighter['lose_record']}")
+                if facility_level == 1:
+                    facility_choice = ''
+                    while facility_choice != "Y" or "N":
+                        facility_choice = input(f"""Your training facility is currently level 1.
+Would you like to upgrade the facility? (Y) or (N) """)
+                        facility_choice = facility_choice.upper()
+                        if facility_choice == "Y":
+                            if {fighter['reputation']} > 40:
+                                print("""You've upgraded your training facility!""")
+                                facility_level = 2
+                            else:
+                                print("Not enough reputation to justify upgrade facility!")
+                        else:
+                            print("""You chose to not upgrade your facility.""")
+                elif facility_level == 2:
+                    facility_choice = ''
+                    while facility_choice != "Y" or "N":
+                        facility_choice = input(f"""Your training facility is currently level 2.
+Would you like to upgrade the facility? (Y) or (N) """)
+                        facility_choice = facility_choice.upper()
+                        if facility_choice == "Y":
+                            if {fighter['reputation']} > 65:
+                                print(
+                                    """You've upgraded your training facility!""")
+                                facility_level = 3
+                            else:
+                                print(
+                                    "Not enough reputation to justify upgrade facility!")
+                        else:
+                            print(
+                                """You chose to not upgrade your facility.""")
+                elif facility_level == 3:
+                    facility_choice = ''
+                    while facility_choice != "Y" or "N":
+                        facility_choice = input(f"""Your training facility is currently level 1.
+Would you like to upgrade the facility? (Y) or (N) """)
+                        facility_choice = facility_choice.upper()
+                        if facility_choice == "Y":
+                            if {fighter['reputation']} > 85:
+                                print(
+                                    """You've upgraded your training facility!""")
+                                facility_level = 4
+                            else:
+                                print(
+                                    "Not enough reputation to justify upgrade facility!")
+                        else:
+                            print(
+                                """You chose to not upgrade your facility.""")
+
             elif next_choice == '4':
+                print(f"Record:  {fighter['win_record']} - {fighter['lose_record']}")
+                print(f"Reputation: {fighter['reputation']}")
+            elif next_choice == '5':
                 break
     if menu_input == 'C':
         print(_CHAPTER_LINE)
