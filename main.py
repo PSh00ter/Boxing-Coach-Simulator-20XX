@@ -210,7 +210,7 @@ You spot three distinct fighters.""")
         print(f"His speciality is {fighter['strength']}")
         print(_CHAPTER_LINE)
         def fight_sequence():
-            global win_record, lose_record, tier, training_sickness, sickness_condition
+            global win_record, lose_record, tier, training_sickness, sickness_condition, week
             tier1_opponent = generate_opponent(tier)
             print(
                 f"""Before the fight, you have the opportunity to give {fighter['first_name']}
@@ -247,9 +247,10 @@ punches at him, you'll be fine!" """)
                 update_reputation(fighter, random.randint(-7, -1))
             training_sickness = 0
             sickness_condition = False
+            week += 1
             random_event_check(fighter)
         def training_sequence():
-            global training_sickness, sickness_condition
+            global training_sickness, sickness_condition, week
             print(f"""As his fight approaches, {fighter['first_name']} needs guidance for his training.
 He asks you what you think he should focus on. You ask him to demonstrate 
 either his speed, strength, or finesse:
@@ -331,6 +332,7 @@ Give him time to rest before the fight!""")
                 elif sickness_condition == True:
                     print(f"""{fighter['first_name']} is sick and cannot train this week.""")
             training_sickness += 1
+            week += 1
             random_event_check(fighter)
         training_sequence()
         print(_CHAPTER_LINE)
@@ -339,14 +341,17 @@ Give him time to rest before the fight!""")
         print(_CHAPTER_LINE)
         print(f"""After his first fight, {fighter['first_name']} seems incredibly motivated
 to continue his training. The shots are now yours to 
-call on how to proceed with his career. Good luck, Coach!""")
-        while next_choice not in [1, 2, 3, 4, 5]:
+call on how to proceed with his career, and the champion
+fight is in 3 years. Good luck, Coach!""")
+        while next_choice not in [1, 2, 3, 4, 5] and week < _CHAMPIONSHIP_FIGHT:
+            print(_CHAPTER_LINE)
+            print(f"WEEK {week}")
             print(_CHAPTER_LINE)
             next_choice = input("""Choose your next action: 
 (1) Train fighter
 (2) Enter fighter into bout
 (3) Improve training facilities
-(4) View record and reputation
+(4) View record, reputation, and week count
 (5) Piss off and die 
 """)
             if next_choice == '1':
@@ -365,21 +370,27 @@ Would you like to upgrade the facility? (Y) or (N)""").upper()
                                 facility_level += 1
                                 print(f"You've upgraded your facility to "
                                       f"level {facility_level}")
+                                week += 1
                             else:
                                 print("""You do not have enough reputation to justify a facility upgrade.""")
                         elif facility_choice == 'N':
                             print("You chose to not upgrade your facility.")
+                            week += 1
                         else:
                             print("Please select (Y) or (N).")
+                            week += 1
                 else:
                     print("Your facility is already the maximum level.")
             elif next_choice == '4':
                 print(f"Record:  {fighter['win_record']} - {fighter['lose_record']}")
                 print(f"Reputation: {fighter['reputation']}")
+                print(f"Week: {week}")
             elif next_choice == '5':
                 break
+
     if menu_input == 'C':
         print(_CHAPTER_LINE)
         print("""This game was made by a solo dev named Preston Knoebel. It 
 serves as his first personal project, and was made to express his 
 love for the sport of boxing and a joy for simulation games.""")
+        pass
