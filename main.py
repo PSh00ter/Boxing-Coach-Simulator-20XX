@@ -3,6 +3,8 @@ from lists import *
 _CHAPTER_LINE = '=' * 75
 _SPONSORSHIP_CHANCE = 0.05
 _SICKNESS_CHANCE = 0.05
+_CHAMPIONSHIP_FIGHT = 156
+week = 0
 fighter_choice = ''
 next_choice = ''
 training_sickness = 0
@@ -352,55 +354,25 @@ call on how to proceed with his career. Good luck, Coach!""")
             elif next_choice == '2':
                 fight_sequence()
             elif next_choice == '3':
-                if facility_level == 1:
-                    facility_choice = ''
-                    while facility_choice != "Y" or "N":
-                        facility_choice = input(f"""Your training facility is currently level 1.
-Would you like to upgrade the facility? (Y) or (N) """)
-                        facility_choice = facility_choice.upper()
-                        if facility_choice == "Y":
-                            if {fighter['reputation']} > 40:
-                                print("""You've upgraded your training facility!""")
-                                facility_level = 2
+                facility_levels = {1: 40, 2: 65, 3: 85}
+                facility_choice = ''
+                if facility_level in facility_levels:
+                    while facility_choice not in ("Y", "N"):
+                        facility_choice = input(f"""Your training facility is currently level {facility_level}.
+Would you like to upgrade the facility? (Y) or (N)""").upper()
+                        if facility_choice == 'Y':
+                            if fighter['reputation'] > facility_levels[facility_level]:
+                                facility_level += 1
+                                print(f"You've upgraded your facility to "
+                                      f"level {facility_level}")
                             else:
-                                print("Not enough reputation to justify upgrade facility!")
+                                print("""You do not have enough reputation to justify a facility upgrade.""")
+                        elif facility_choice == 'N':
+                            print("You chose to not upgrade your facility.")
                         else:
-                            print("""You chose to not upgrade your facility.""")
-                elif facility_level == 2:
-                    facility_choice = ''
-                    while facility_choice != "Y" or "N":
-                        facility_choice = input(f"""Your training facility is currently level 2.
-Would you like to upgrade the facility? (Y) or (N) """)
-                        facility_choice = facility_choice.upper()
-                        if facility_choice == "Y":
-                            if {fighter['reputation']} > 65:
-                                print(
-                                    """You've upgraded your training facility!""")
-                                facility_level = 3
-                            else:
-                                print(
-                                    "Not enough reputation to justify upgrade facility!")
-                        else:
-                            print(
-                                """You chose to not upgrade your facility.""")
-                elif facility_level == 3:
-                    facility_choice = ''
-                    while facility_choice != "Y" or "N":
-                        facility_choice = input(f"""Your training facility is currently level 1.
-Would you like to upgrade the facility? (Y) or (N) """)
-                        facility_choice = facility_choice.upper()
-                        if facility_choice == "Y":
-                            if {fighter['reputation']} > 85:
-                                print(
-                                    """You've upgraded your training facility!""")
-                                facility_level = 4
-                            else:
-                                print(
-                                    "Not enough reputation to justify upgrade facility!")
-                        else:
-                            print(
-                                """You chose to not upgrade your facility.""")
-
+                            print("Please select (Y) or (N).")
+                else:
+                    print("Your facility is already the maximum level.")
             elif next_choice == '4':
                 print(f"Record:  {fighter['win_record']} - {fighter['lose_record']}")
                 print(f"Reputation: {fighter['reputation']}")
