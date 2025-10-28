@@ -75,6 +75,7 @@ def generate_opponent(tier):
     lname = random.choice(last_names)
     height = (possible_heights[random.randint(0, len(possible_heights) - 1)])
     weight = (random.randint(100, 205))
+    strength = random.choice(strengths)
     if tier == 'tier1':
         speed = (random.randint(25, 40))
         power = (random.randint(25, 40))
@@ -87,7 +88,11 @@ def generate_opponent(tier):
         speed = (random.randint(65, 80))
         power = (random.randint(65, 80))
         finesse = (random.randint(65, 80))
-    strength = random.choice(strengths)
+    elif tier == 'champion':
+        speed = (fighter['speed']) + (random.randint(-15, 5))
+        power = (fighter['power']) + (random.randint(-3, 12))
+        finesse = (fighter['finesse']) + (random.randint(-10, 8))
+
     return {
         'first_name': fname.strip(),
         'last_name': lname,
@@ -162,35 +167,250 @@ champion title!""")
         print("""You enter the Noo-Boxers Gym, scoping out the potential 
 fighters around you and trying to search for a prospect who looks promising. 
 You spot three distinct fighters.""")
-        print(_CHAPTER_LINE)
-        print(display_character(fighter1))
-        print(_CHAPTER_LINE)
-        print(display_character(fighter2))
-        print(_CHAPTER_LINE)
-        print(display_character(fighter3))
-        print(_CHAPTER_LINE)
-        fighter = ''
-        while fighter_choice not in ['1', '2', '3']:
-            fighter_choice = input("Pick which fighter you'd like to take on! ")
-            if fighter_choice == '1':
-                fighter = fighter1
-            elif fighter_choice == '2':
-                fighter = fighter2
-            elif fighter_choice == '3':
-                fighter = fighter3
-            else:
-                print("Invalid choice! Try again.")
-        print(f"You've chosen {fighter['name']} as your main pupil.")
-        print(f"His speciality is {fighter['strength']}")
-        print(_CHAPTER_LINE)
-        def fight_sequence():
-            global win_record, lose_record, tier, training_sickness
-            tier1_opponent = generate_opponent(tier)
-            print(
-                f"""Before the fight, you have the opportunity to give {fighter['first_name']}
-advice so that he may beat the opponent.
-(A) "Good advice"
-(B) "Bad advice" """)
+            print(_CHAPTER_LINE)
+            print(display_character(fighter1))
+            print(_CHAPTER_LINE)
+            print(display_character(fighter2))
+            print(_CHAPTER_LINE)
+            print(display_character(fighter3))
+            print(_CHAPTER_LINE)
+            fighter = ''
+            while fighter_choice not in ['1', '2', '3']:
+                fighter_choice = input(
+                    "Pick which fighter you'd like to take on! ")
+                if fighter_choice == '1':
+                    fighter = fighter1
+                elif fighter_choice == '2':
+                    fighter = fighter2
+                elif fighter_choice == '3':
+                    fighter = fighter3
+                else:
+                    print("Invalid choice! Try again.")
+            print(f"You've chosen {fighter['name']} as your main pupil.")
+            print(f"His speciality is {fighter['strength']}")
+            print(_CHAPTER_LINE)
+
+
+            def fight_sequence():
+                global win_record, lose_record, tier, training_sickness, sickness_condition, week
+                tier1_opponent = generate_opponent(tier)
+                print(
+                    f"""Before the fight, you have the opportunity to give {fighter['first_name']}
+advice so that he may beat the opponent. The opponent's name is 
+{tier1_opponent['name']} and he is {tier1_opponent['height']}, with his strength being {fighter['strength']}.
+(A) "Aim for a solid offense, but make sure to work your jab and keep your 
+distance."
+(B) "This guy looks pretty menacing, just turtle up and don't throw too many 
+punches at him, you'll be fine!" """)
+                advice = input("What advice do you give? ")
+                advice = advice.upper()
+                fight_outcome = ''
+                if advice == 'A':
+                    fight_outcome = calculate_win_percentage(fighter,
+                                                             tier1_opponent, 10)
+                elif advice == 'B':
+                    fight_outcome = calculate_win_percentage(fighter,
+                                                             tier1_opponent, 5)
+                if fight_outcome == 'win':
+                    print(
+                        f"{fighter['first_name']} has defeated {tier1_opponent['first_name']} and won!")
+                    fighter['win_record'] += 1
+                    print(
+                        f"New record:  {fighter['win_record']} - {fighter['lose_record']}")
+                    update_reputation(fighter, random.randint(1, 7))
+                    if fighter['win_record'] >= 6:
+                        tier = 'tier2'
+                    elif fighter['win_record'] >= 10:
+                        tier = 'tier3'
+                elif fight_outcome == 'lose':
+                    print(
+                        f"{fighter['first_name']} has been defeated by {tier1_opponent['first_name']} and lost!")
+                    fighter['lose_record'] += 1
+                    print(
+                        f"New record:  {fighter['win_record']} - {fighter['lose_record']}")
+                    update_reputation(fighter, random.randint(-7, -1))
+                training_sickness = 0
+                sickness_condition = False
+                week += 1
+                random_event_check(fighter)
+
+
+            def training_sequence():
+                global training_sickness, sickness_condition, week
+                print(f"""As his fight approaches, {fighter['first_name']} needs guidance for his training.
+He asks you what you think he should focus on. You ask him to demonstrate 
+either his speed, strength, or finesse:
+(SP) : Speed
+(P) : Power
+(F) : Finesse""")
+                stat_demo = ''
+                upgrade_stat = ''
+                while stat_demo not in ['SP', 'P', 'F']:
+                    stat_demo = input(
+                        "Choose which stat you would like to see: ")
+                    stat_demo = stat_demo.upper()
+                    if stat_demo == 'SP':
+                        print(f"Speed = {fighter['speed']}")
+                    elif stat_demo == 'P':
+                        print(f"Power = {fighter['power']}")
+                    elif stat_demo == 'F':
+                        print(f"Finesse = {fighter['finesse']}")
+                if training_sickness < 3 and sickness_condition == False:
+                    while upgrade_stat not in ['SP', 'P', 'F']:
+                        upgrade_stat = input(
+                            f"Now, choose which stat to work on with "
+                            f"{fighter['first_name']}: ")
+                        upgrade_stat = upgrade_stat.upper()
+                        if facility_level == 1:
+                            if upgrade_stat == 'SP':
+                                fighter['speed'] = fighter[
+                                                       'speed'] + random.randint(
+                                    1, 6)
+                                print(f"New Speed = {fighter['speed']}")
+                            elif upgrade_stat == 'P':
+                                fighter['power'] = fighter[
+                                                       'power'] + random.randint(
+                                    1, 6)
+                                print(f"New Power = {fighter['power']}")
+                            elif upgrade_stat == 'F':
+                                fighter['finesse'] = fighter[
+                                                         'finesse'] + random.randint(
+                                    1, 6)
+                                print(f"New Finesse = {fighter['finesse']}")
+                        elif facility_level == 2:
+                            if upgrade_stat == 'SP':
+                                fighter['speed'] = fighter[
+                                                       'speed'] + random.randint(
+                                    3, 9)
+                                print(f"New Speed = {fighter['speed']}")
+                            elif upgrade_stat == 'P':
+                                fighter['power'] = fighter[
+                                                       'power'] + random.randint(
+                                    3, 9)
+                                print(f"New Power = {fighter['power']}")
+                            elif upgrade_stat == 'F':
+                                fighter['finesse'] = fighter[
+                                                         'finesse'] + random.randint(
+                                    3, 9)
+                                print(f"New Finesse = {fighter['finesse']}")
+                        elif facility_level == 3:
+                            if upgrade_stat == 'SP':
+                                fighter['speed'] = fighter[
+                                                       'speed'] + random.randint(
+                                    5, 12)
+                                print(f"New Speed = {fighter['speed']}")
+                            elif upgrade_stat == 'P':
+                                fighter['power'] = fighter[
+                                                       'power'] + random.randint(
+                                    5, 12)
+                                print(f"New Power = {fighter['power']}")
+                            elif upgrade_stat == 'F':
+                                fighter['finesse'] = fighter[
+                                                         'finesse'] + random.randint(
+                                    5, 12)
+                                print(f"New Finesse = {fighter['finesse']}")
+                        elif facility_level == 4:
+                            if upgrade_stat == 'SP':
+                                fighter['speed'] = fighter[
+                                                       'speed'] + random.randint(
+                                    7, 14)
+                                print(f"New Speed = {fighter['speed']}")
+                            elif upgrade_stat == 'P':
+                                fighter['power'] = fighter[
+                                                       'power'] + random.randint(
+                                    7, 14)
+                                print(f"New Power = {fighter['power']}")
+                            elif upgrade_stat == 'F':
+                                fighter['finesse'] = fighter[
+                                                         'finesse'] + random.randint(
+                                    7, 14)
+                                print(f"New Finesse = {fighter['finesse']}")
+                else:
+                    if training_sickness >= 3:
+                        print(
+                            f"""You've been overdoing it with {fighter['first_name']}'s training!
+Give him time to rest before the fight!""")
+                    elif sickness_condition == True:
+                        print(
+                            f"""{fighter['first_name']} is sick and cannot train this week.""")
+                training_sickness += 1
+                week += 1
+                random_event_check(fighter)
+
+
+            training_sequence()
+            print(_CHAPTER_LINE)
+            print(f"""After training, it's time to fight.""")
+            fight_sequence()
+            print(_CHAPTER_LINE)
+            print(f"""After his first fight, {fighter['first_name']} seems incredibly motivated
+to continue his training. The shots are now yours to 
+call on how to proceed with his career, and the champion
+fight is in 3 years. Good luck, Coach!""")
+            while next_choice not in [1, 2, 3, 4,
+                                      5] and week < _CHAMPIONSHIP_FIGHT:
+                print(_CHAPTER_LINE)
+                print(f"WEEK {week}")
+                print(_CHAPTER_LINE)
+                next_choice = input("""Choose your next action: 
+(1) Train fighter
+(2) Enter fighter into bout
+(3) Improve training facilities
+(4) View record, reputation, and week count
+(5) Exit game
+""")
+                if next_choice == '1':
+                    training_sequence()
+                elif next_choice == '2':
+                    fight_sequence()
+                elif next_choice == '3':
+                    facility_levels = {1: 40, 2: 65, 3: 85}
+                    facility_choice = ''
+                    if facility_level in facility_levels:
+                        while facility_choice not in ("Y", "N"):
+                            facility_choice = input(
+                                f"""Your training facility is currently level {facility_level}.
+Would you like to upgrade the facility? (Y) or (N)""").upper()
+                            if facility_choice == 'Y':
+                                if fighter['reputation'] > facility_levels[
+                                    facility_level]:
+                                    facility_level += 1
+                                    print(f"You've upgraded your facility to "
+                                          f"level {facility_level}")
+                                    week += 1
+                                else:
+                                    print(
+                                        """You do not have enough reputation to justify a facility upgrade.""")
+                            elif facility_choice == 'N':
+                                print("You chose to not upgrade your facility.")
+                                week += 1
+                            else:
+                                print("Please select (Y) or (N).")
+                                week += 1
+                    else:
+                        print("Your facility is already the maximum level.")
+                elif next_choice == '4':
+                    print(
+                        f"Record:  {fighter['win_record']} - {fighter['lose_record']}")
+                    print(f"Reputation: {fighter['reputation']}")
+                    print(f"Week: {week}")
+                elif next_choice == '5':
+                    break
+                elif next_choice == '6':
+                    week = 160
+            print(_CHAPTER_LINE)
+            print(f"""It is now time for the Championship Fight. All your hard 
+work has been leading up to this, and it's time for {fighter['first_name']} 
+and you to stake your claim in boxing history.""")
+            print(_CHAPTER_LINE)
+            champ = generate_opponent('champion')
+            print(f"The champion is {champ['name']}.")
+            print(f"""Before the champion fight, you have the opportunity to give
+{fighter['first_name']} advice so that he can beat the champion. 
+{champ['name']}'s height is {champ['height']}, with his strength being 
+{champ['strength']}. He looks particularly strong.
+(A) "Listen kid, we've been through a lot together...you got this. Just don't get greedy, watch your feet, and look for counterpunch opportunities."
+(B) "The champ looks strong...maybe just try to avoid his punches and wear him out?" """)
             advice = input("What advice do you give? ")
             advice = advice.upper()
             fight_outcome = ''
@@ -214,7 +434,7 @@ advice so that he may beat the opponent.
                     f"{fighter['first_name']} has been defeated by {tier1_opponent['first_name']} and lost!")
                 fighter['lose_record'] += 1
                 print(f"New record:  {fighter['win_record']} - {fighter['lose_record']}")
-            training_sickness = 0
+                training_sickness = 0
         def training_sequence():
             global training_sickness
             print(f"""As his fight approaches, {fighter['first_name']} needs guidance for his training.
